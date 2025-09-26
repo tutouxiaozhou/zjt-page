@@ -15,4 +15,11 @@ export default defineConfig({
         allowedHosts: true,
     },
     base: "./",
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,
+            },
+        },
+    },
 });
