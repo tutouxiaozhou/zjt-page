@@ -1,6 +1,7 @@
 {
-  "build": {
-    "command": "npm run cf-build",
-    "publish": "dist"
+  "name": "zjt-page",
+  "compatibility_date": "2025-09-26",
+  "assets": {
+    "directory": "./dist"
   }
 }
