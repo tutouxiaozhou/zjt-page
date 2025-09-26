@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, Transition } from "framer-motion";
 
 // 页面进入动画配置
 export const pageVariants = {
@@ -17,7 +17,7 @@ export const pageVariants = {
     },
 };
 
-export const pageTransition = {
+export const pageTransition: Transition = {
     type: "tween",
     ease: "anticipate",
     duration: 0.5,
@@ -270,6 +270,24 @@ export const AnimatedCounter: React.FC<{
     delay?: number;
     className?: string;
 }> = ({ from, to, duration = 2, delay = 0, className = "" }) => {
+    const [count, setCount] = React.useState(from);
+    
+    React.useEffect(() => {
+        let start = from;
+        const increment = (to - from) / (duration * 60); // 60fps
+        const timer = setInterval(() => {
+            start += increment;
+            if ((increment > 0 && start >= to) || (increment < 0 && start <= to)) {
+                clearInterval(timer);
+                setCount(to);
+            } else {
+                setCount(Math.round(start));
+            }
+        }, 1000 / 60); // 60fps
+        
+        return () => clearInterval(timer);
+    }, [from, to, duration]);
+    
     return (
         <motion.span
             initial={{ opacity: 0 }}
@@ -277,20 +295,7 @@ export const AnimatedCounter: React.FC<{
             transition={{ delay }}
             className={className}
         >
-            <motion.span
-                initial={{ textContent: from }}
-                animate={{ textContent: to }}
-                transition={{
-                    duration,
-                    delay,
-                    ease: "easeOut",
-                }}
-                onUpdate={(latest) => {
-                    if (typeof latest.textContent === "number") {
-                        return Math.round(latest.textContent);
-                    }
-                }}
-            />
+            {count}
         </motion.span>
     );
 };
